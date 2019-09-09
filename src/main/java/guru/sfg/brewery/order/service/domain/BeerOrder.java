@@ -70,6 +70,6 @@ public class BeerOrder {
     @Fetch(FetchMode.JOIN)
     private Set<BeerOrderLine> beerOrderLines;
 
-    private OrderStatusEnum orderStatus = OrderStatusEnum.NEW;
+    private BeerOrderStatusEnum orderStatus = BeerOrderStatusEnum.NEW;
     private String orderStatusCallbackUrl;
 }

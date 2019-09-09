@@ -18,7 +18,7 @@
 package guru.sfg.brewery.order.service.interceptors;
 
 import guru.sfg.brewery.order.service.domain.BeerOrder;
-import guru.sfg.brewery.order.service.domain.OrderStatusEnum;
+import guru.sfg.brewery.order.service.domain.BeerOrderStatusEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,8 +42,8 @@ class OrderHeaderInterceptorTest {
     void onFlushDirty() {
         //given
         BeerOrder beerOrder = BeerOrder.builder().build();
-        Object[] currentState = {OrderStatusEnum.NEW};
-        Object[] prevState = {OrderStatusEnum.READY};
+        Object[] currentState = {BeerOrderStatusEnum.NEW};
+        Object[] prevState = {BeerOrderStatusEnum.ALLOCATED};
 
         //when
         orderHeaderInterceptor.onFlushDirty(beerOrder, null, currentState, prevState, null, null);

@@ -18,19 +18,19 @@
 package guru.sfg.brewery.order.service.events;
 
 import guru.sfg.brewery.order.service.domain.BeerOrder;
-import guru.sfg.brewery.order.service.domain.OrderStatusEnum;
+import guru.sfg.brewery.order.service.domain.BeerOrderStatusEnum;
 import org.springframework.context.ApplicationEvent;
 
 public class BeerOrderStatusChangeEvent extends ApplicationEvent {
 
-    private final OrderStatusEnum previousStatus;
+    private final BeerOrderStatusEnum previousStatus;
 
-    public BeerOrderStatusChangeEvent(BeerOrder source, OrderStatusEnum previousStatus) {
+    public BeerOrderStatusChangeEvent(BeerOrder source, BeerOrderStatusEnum previousStatus) {
         super(source);
         this.previousStatus = previousStatus;
     }
 
-    public OrderStatusEnum getPreviousStatus() {
+    public BeerOrderStatusEnum getPreviousStatus() {
         return previousStatus;
     }
 

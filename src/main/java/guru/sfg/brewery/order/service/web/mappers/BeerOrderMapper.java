@@ -18,8 +18,8 @@
 package guru.sfg.brewery.order.service.web.mappers;
 
 
+import guru.sfg.brewery.model.BeerOrderDto;
 import guru.sfg.brewery.order.service.domain.BeerOrder;
-import guru.sfg.brewery.order.service.web.model.BeerOrderDto;
 import org.mapstruct.Mapper;
 
 @Mapper(uses = {DateMapper.class, BeerOrderLineMapper.class})

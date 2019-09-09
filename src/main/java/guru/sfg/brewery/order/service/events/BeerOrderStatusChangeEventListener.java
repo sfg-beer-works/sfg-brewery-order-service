@@ -17,8 +17,8 @@
 
 package guru.sfg.brewery.order.service.events;
 
+import guru.sfg.brewery.model.OrderStatusUpdate;
 import guru.sfg.brewery.order.service.web.mappers.DateMapper;
-import guru.sfg.brewery.order.service.web.model.OrderStatusUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.event.EventListener;

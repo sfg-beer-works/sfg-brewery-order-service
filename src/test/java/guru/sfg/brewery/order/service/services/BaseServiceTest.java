@@ -17,14 +17,14 @@
 
 package guru.sfg.brewery.order.service.services;
 
+import guru.sfg.brewery.model.BeerDto;
 import guru.sfg.brewery.order.service.domain.BeerOrder;
 import guru.sfg.brewery.order.service.domain.BeerOrderLine;
+import guru.sfg.brewery.order.service.domain.BeerOrderStatusEnum;
 import guru.sfg.brewery.order.service.domain.Customer;
-import guru.sfg.brewery.order.service.domain.OrderStatusEnum;
 import guru.sfg.brewery.order.service.repositories.BeerOrderLineRepository;
 import guru.sfg.brewery.order.service.repositories.BeerOrderRepository;
 import guru.sfg.brewery.order.service.repositories.CustomerRepository;
-import guru.sfg.brewery.order.service.web.model.BeerDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -101,7 +101,7 @@ public abstract class BaseServiceTest {
                 .orderQuantity(7).quantityAllocated(0).build());
 
         testOrder1 = beerOrderRepository.save(BeerOrder.builder()
-                .orderStatus(OrderStatusEnum.NEW)
+                .orderStatus(BeerOrderStatusEnum.NEW)
                 .customer(testCustomer)
                 .customerRef("testOrder1")
                 .orderStatusCallbackUrl("http://example.com/post")
@@ -121,7 +121,7 @@ public abstract class BaseServiceTest {
                 .orderQuantity(7).quantityAllocated(0).build());
 
         testOrder2 = beerOrderRepository.save(BeerOrder.builder()
-                .orderStatus(OrderStatusEnum.NEW)
+                .orderStatus(BeerOrderStatusEnum.NEW)
                 .customer(testCustomer)
                 .customerRef("testOrder2")
                 .orderStatusCallbackUrl("http://example.com/post")
@@ -141,7 +141,7 @@ public abstract class BaseServiceTest {
                 .orderQuantity(7).quantityAllocated(0).build());
 
         testOrder3 = beerOrderRepository.save(BeerOrder.builder()
-                .orderStatus(OrderStatusEnum.NEW)
+                .orderStatus(BeerOrderStatusEnum.NEW)
                 .customer(testCustomer)
                 .customerRef("testOrder3")
                 .orderStatusCallbackUrl("http://example.com/post")

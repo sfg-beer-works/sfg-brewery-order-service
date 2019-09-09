@@ -18,7 +18,7 @@
 package guru.sfg.brewery.order.service.interceptors;
 
 import guru.sfg.brewery.order.service.domain.BeerOrder;
-import guru.sfg.brewery.order.service.domain.OrderStatusEnum;
+import guru.sfg.brewery.order.service.domain.BeerOrderStatusEnum;
 import guru.sfg.brewery.order.service.events.BeerOrderStatusChangeEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.EmptyInterceptor;
@@ -46,11 +46,11 @@ public class OrderHeaderInterceptor extends EmptyInterceptor {
 
         if (entity instanceof BeerOrder){
             for(Object curObj : currentState){
-                if(curObj instanceof OrderStatusEnum){
+                if(curObj instanceof BeerOrderStatusEnum){
                     for (Object prevObj : previousState){
-                        if (prevObj instanceof OrderStatusEnum) {
-                            OrderStatusEnum curStatus = (OrderStatusEnum) curObj;
-                            OrderStatusEnum prevStatus = (OrderStatusEnum) prevObj;
+                        if (prevObj instanceof BeerOrderStatusEnum) {
+                            BeerOrderStatusEnum curStatus = (BeerOrderStatusEnum) curObj;
+                            BeerOrderStatusEnum prevStatus = (BeerOrderStatusEnum) prevObj;
 
                             if(curStatus != prevStatus){
                                 log.debug("Order status change detected");

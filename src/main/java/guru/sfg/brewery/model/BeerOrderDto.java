@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package guru.sfg.brewery.order.service.web.model;
+package guru.sfg.brewery.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,18 +24,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
-import javax.validation.constraints.Positive;
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BeerOrderLineDto {
+public class BeerOrderDto {
 
     @Null
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -46,30 +45,23 @@ public class BeerOrderLineDto {
     private Integer version = null;
 
     @Null
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
     private OffsetDateTime createdDate = null;
 
     @Null
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
     private OffsetDateTime lastModifiedDate = null;
 
-    @Null
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private UUID beerId;
+    @NotBlank
+    private UUID customerId;
 
-    @NotNull
-    private String upc;
-    private String beerName;
-    private String beerStyle;
-
-    @NotNull
-    @Positive
-    private Integer orderQuantity;
+    private String customerRef;
+    private List<BeerOrderLineDto> beerOrderLines;
 
     @Null
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Integer quantityAllocated;
-
-    @JsonFormat(shape= JsonFormat.Shape.STRING)
-    private BigDecimal price;
+    private String orderStatus;
+    private String orderStatusCallbackUrl;
 }

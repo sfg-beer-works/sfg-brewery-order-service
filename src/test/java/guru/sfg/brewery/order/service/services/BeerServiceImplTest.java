@@ -2,7 +2,7 @@ package guru.sfg.brewery.order.service.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guru.sfg.brewery.order.service.web.model.BeerDto;
+import guru.sfg.brewery.model.BeerDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;

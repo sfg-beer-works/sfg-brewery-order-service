@@ -21,7 +21,7 @@ import com.github.jenspiegsa.wiremockextension.Managed;
 import com.github.jenspiegsa.wiremockextension.WireMockExtension;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import guru.sfg.brewery.order.service.domain.BeerOrder;
-import guru.sfg.brewery.order.service.domain.OrderStatusEnum;
+import guru.sfg.brewery.order.service.domain.BeerOrderStatusEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,12 +54,12 @@ class BeerOrderStatusChangeEventListenerTest {
         wireMockServer.stubFor(post("/update").withRequestBody(matchingJsonPath("$.orderId")).willReturn(ok()));
 
         BeerOrder beerOrder = BeerOrder.builder().id(UUID.randomUUID())
-                                    .orderStatus(OrderStatusEnum.READY)
+                                    .orderStatus(BeerOrderStatusEnum.ALLOCATED)
                                     .orderStatusCallbackUrl("http://localhost:" + wireMockServer.port() + "/update")
                                     .createdDate(Timestamp.valueOf(LocalDateTime.now()))
                                     .build();
 
-        BeerOrderStatusChangeEvent event = new BeerOrderStatusChangeEvent(beerOrder, OrderStatusEnum.NEW);
+        BeerOrderStatusChangeEvent event = new BeerOrderStatusChangeEvent(beerOrder, BeerOrderStatusEnum.NEW);
 
         listener.listen(event);
 

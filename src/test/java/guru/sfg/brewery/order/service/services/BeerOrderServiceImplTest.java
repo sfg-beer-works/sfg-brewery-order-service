@@ -17,9 +17,9 @@
 
 package guru.sfg.brewery.order.service.services;
 
-import guru.sfg.brewery.order.service.web.model.BeerOrderDto;
-import guru.sfg.brewery.order.service.web.model.BeerOrderLineDto;
-import guru.sfg.brewery.order.service.web.model.BeerOrderPagedList;
+import guru.sfg.brewery.model.BeerOrderDto;
+import guru.sfg.brewery.model.BeerOrderLineDto;
+import guru.sfg.brewery.model.BeerOrderPagedList;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

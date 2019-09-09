@@ -21,11 +21,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import guru.sfg.brewery.order.service.domain.OrderStatusEnum;
+import guru.sfg.brewery.model.BeerOrderDto;
+import guru.sfg.brewery.model.BeerOrderLineDto;
+import guru.sfg.brewery.model.BeerOrderPagedList;
+import guru.sfg.brewery.order.service.domain.BeerOrderStatusEnum;
 import guru.sfg.brewery.order.service.services.BeerOrderService;
-import guru.sfg.brewery.order.service.web.model.BeerOrderDto;
-import guru.sfg.brewery.order.service.web.model.BeerOrderLineDto;
-import guru.sfg.brewery.order.service.web.model.BeerOrderPagedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -150,7 +150,7 @@ class BeerOrderControllerTest {
         BeerOrderDto orderResponseDto = buildOrderDto();
         orderResponseDto.setCustomerId(customerId);
         orderResponseDto.setId(orderId);
-        orderResponseDto.setOrderStatus(OrderStatusEnum.NEW);
+        orderResponseDto.setOrderStatus(BeerOrderStatusEnum.NEW);
 
         BeerOrderLineDto beerOrderLine = BeerOrderLineDto.builder()
                 .id(UUID.randomUUID())
