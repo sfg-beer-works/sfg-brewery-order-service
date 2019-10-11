@@ -14,12 +14,14 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class BeerOrderValidationListener {
+public class BeerOrderValidationResultListener {
 
     private final BeerOrderManager beerOrderManager;
 
     @JmsListener(destination = JmsConfig.VALIDATE_ORDER_RESULT_QUEUE)
     public void listen(BeerOrderValidationResult result) {
+        log.debug("Validation Result for Order Id: " + result.getBeerOrderId() + " is: " + result.getIsValid());
+
         if(result.getIsValid()){
             beerOrderManager.beerOrderPassedValidation(result.getBeerOrderId());
         } else {

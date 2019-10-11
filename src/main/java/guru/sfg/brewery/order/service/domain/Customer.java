@@ -17,11 +17,9 @@
 package guru.sfg.brewery.order.service.domain;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
+import javax.persistence.Entity;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -36,6 +34,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
+@Proxy(lazy = false)
 public class Customer {
 
     @Id

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class BeerOrderAllocationListener {
+public class BeerOrderAllocationResultListener {
     private final BeerOrderManager beerOrderManager;
 
     @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE)

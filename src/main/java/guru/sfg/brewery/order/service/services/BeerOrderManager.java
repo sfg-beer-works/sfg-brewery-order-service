@@ -9,7 +9,7 @@ import java.util.UUID;
  */
 public interface BeerOrderManager {
 
-    void newBeerOrder(BeerOrder beerOrder);
+    BeerOrder newBeerOrder(BeerOrder beerOrder);
 
     void beerOrderPassedValidation(UUID beerOrderId);
 

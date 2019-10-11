@@ -30,9 +30,13 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     private final BeerOrderStateChangeInterceptor beerOrderStateChangeInterceptor;
 
     @Override
-    public void newBeerOrder(BeerOrder beerOrder) {
+    public BeerOrder newBeerOrder(BeerOrder beerOrder) {
+        BeerOrder savedOrder = beerOrderRepository.save(beerOrder);
+
         //send validation event
-        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATE_ORDER);
+        sendBeerOrderEvent(savedOrder, BeerOrderEventEnum.VALIDATE_ORDER);
+
+        return beerOrderRepository.getOne(savedOrder.getId());
     }
 
     @Override

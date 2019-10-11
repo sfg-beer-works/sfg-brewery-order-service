@@ -17,11 +17,9 @@
 package guru.sfg.brewery.order.service.domain;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
+import javax.persistence.Entity;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -31,10 +29,12 @@ import java.util.UUID;
  */
 @Getter
 @Setter
+@ToString(exclude = "beerOrder")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
+@Proxy(lazy = false)
 public class BeerOrderLine {
 
     @Id

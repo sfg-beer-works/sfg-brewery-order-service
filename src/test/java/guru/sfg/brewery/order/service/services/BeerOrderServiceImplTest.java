@@ -61,7 +61,7 @@ class BeerOrderServiceImplTest extends BaseServiceTest {
         BeerOrderDto placedOrder = beerOrderService.placeOrder(testCustomer.getId(), dto);
 
         assertThat(placedOrder.getId()).isNotNull();
-        assertThat(placedOrder.getOrderStatus().name()).isEqualToIgnoringCase("NEW");
+        assertThat(placedOrder.getOrderStatus()).isEqualToIgnoringCase("NEW");
     }
 
     @Test
@@ -78,6 +78,6 @@ class BeerOrderServiceImplTest extends BaseServiceTest {
         BeerOrderDto dto = beerOrderService.getOrderById(testCustomer.getId(), testOrder1.getId());
 
         assertThat(dto.getId()).isEqualTo(testOrder1.getId());
-        assertThat(dto.getOrderStatus().name()).isEqualTo("PICKED_UP");
+        assertThat(dto.getOrderStatus()).isEqualTo("PICKED_UP");
     }
 }

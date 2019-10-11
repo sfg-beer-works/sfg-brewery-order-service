@@ -150,7 +150,7 @@ class BeerOrderControllerTest {
         BeerOrderDto orderResponseDto = buildOrderDto();
         orderResponseDto.setCustomerId(customerId);
         orderResponseDto.setId(orderId);
-        orderResponseDto.setOrderStatus(BeerOrderStatusEnum.NEW);
+        orderResponseDto.setOrderStatus(BeerOrderStatusEnum.NEW.name());
 
         BeerOrderLineDto beerOrderLine = BeerOrderLineDto.builder()
                 .id(UUID.randomUUID())

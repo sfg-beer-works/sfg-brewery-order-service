@@ -1,6 +1,7 @@
 package guru.sfg.brewery.order.service.services;
 
 import guru.sfg.brewery.model.BeerDto;
+import guru.sfg.brewery.model.BeerPagedList;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -13,8 +14,8 @@ import java.util.UUID;
 @Service
 public class BeerServiceImpl implements BeerService {
 
-    public final String BEER_PATH_V1 = "/api/v1/beer/";
-    public final String BEER_UPC_PATH_V1 = "/api/v1/beerUpc/";
+    public static final String BEER_PATH_V1 = "/api/v1/beer/";
+    public static final String BEER_UPC_PATH_V1 = "/api/v1/beerUpc/";
     private final RestTemplate restTemplate;
 
     private String beerServiceHost;
@@ -25,12 +26,17 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public Optional<BeerDto> getBeerById(UUID uuid){
-        return Optional.of(restTemplate.getForObject(beerServiceHost + BEER_PATH_V1 + uuid.toString(), BeerDto.class));
+        return Optional.ofNullable(restTemplate.getForObject(beerServiceHost + BEER_PATH_V1 + uuid.toString(), BeerDto.class));
     }
 
     @Override
     public Optional<BeerDto> getBeerByUpc(String upc) {
-        return Optional.of(restTemplate.getForObject(beerServiceHost + BEER_UPC_PATH_V1 + upc, BeerDto.class));
+        return Optional.ofNullable(restTemplate.getForObject(beerServiceHost + BEER_UPC_PATH_V1 + upc, BeerDto.class));
+    }
+
+    @Override
+    public Optional<BeerPagedList> getListofBeers() {
+        return Optional.ofNullable(restTemplate.getForObject(beerServiceHost + BEER_PATH_V1, BeerPagedList.class));
     }
 
     public void setBeerServiceHost(String beerServiceHost) {

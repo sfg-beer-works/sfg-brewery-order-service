@@ -32,9 +32,11 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Proxy(lazy = false)
 public class BeerOrder {
 
     @Id
@@ -63,13 +65,16 @@ public class BeerOrder {
 
     private String customerRef;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
     private Customer customer;
 
-    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @Fetch(FetchMode.JOIN)
     private Set<BeerOrderLine> beerOrderLines;
 
+    @Enumerated(EnumType.STRING)
     private BeerOrderStatusEnum orderStatus = BeerOrderStatusEnum.NEW;
+
     private String orderStatusCallbackUrl;
 }
