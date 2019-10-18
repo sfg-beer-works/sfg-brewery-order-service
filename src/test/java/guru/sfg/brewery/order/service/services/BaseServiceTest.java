@@ -53,8 +53,6 @@ public abstract class BaseServiceTest {
     BeerDto testBeerGalaxy;
     BeerDto testBeerJava;
     BeerDto testBeerMangoBob;
-  //  BeerInventory testInventoryGalaxy;
-  //  BeerInventory testInventoryJava;
 
     Customer testCustomer;
     BeerOrder testOrder1;
@@ -78,16 +76,6 @@ public abstract class BaseServiceTest {
                 .beerName("Mango Bobs")
                 .beerStyle("IPA")
                 .build();
-
-//        testInventoryGalaxy = beerInventoryRepository.save(BeerInventory.builder()
-//                .beer_service(testBeerGalaxy)
-//                .quantityOnHand(1000)
-//                .build());
-//
-//        testInventoryJava = beerInventoryRepository.save(BeerInventory.builder()
-//                .beer_service(testBeerJava)
-//                .quantityOnHand(10)
-//                .build());
 
         testCustomer = customerRepository.save(Customer
                 .builder()
@@ -151,6 +139,7 @@ public abstract class BaseServiceTest {
         orderLines3.forEach(line -> {
             line.setBeerOrder(testOrder3);
         });
+
         beerOrderRepository.saveAndFlush(testOrder3);
     }
 }

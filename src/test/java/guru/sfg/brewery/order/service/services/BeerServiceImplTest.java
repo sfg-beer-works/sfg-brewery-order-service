@@ -35,8 +35,8 @@ class BeerServiceImplTest {
         BeerDto dto = BeerDto.builder().id(testUUID).build();
         String jsonDto = mapper.writeValueAsString(dto);
 
-        server.expect(requestTo("http://localhost:8080/api/v1/beer/" + testUUID.toString()))
-                .andRespond(withSuccess(jsonDto, MediaType.APPLICATION_JSON_UTF8));
+        server.expect(requestTo("http://localhost:8083/api/v1/beer/" + testUUID.toString()))
+                .andRespond(withSuccess(jsonDto, MediaType.APPLICATION_JSON));
 
         Optional<BeerDto> beerDtoOptional = beerService.getBeerById(testUUID);
 

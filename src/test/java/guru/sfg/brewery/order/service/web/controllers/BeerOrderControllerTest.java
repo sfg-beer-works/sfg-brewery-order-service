@@ -105,7 +105,7 @@ class BeerOrderControllerTest {
 
         mockMvc.perform(get(API_ROOT + customerId.toString()+ "/orders").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content", hasSize(2)))
                 .andExpect(openApi().isValid(OAC_SPEC));
 
@@ -135,7 +135,7 @@ class BeerOrderControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.customerId", is(customerId.toString())))
                 .andExpect(jsonPath("$.beerOrderLines", hasSize(1)))
                 .andExpect(jsonPath("$.beerOrderLines[0].beerId", is(beerId.toString())))
@@ -188,7 +188,7 @@ class BeerOrderControllerTest {
         mockMvc.perform(get(API_ROOT + customerId + "/orders/" + orderId)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.customerId", is(customerId.toString())))
                 .andExpect(jsonPath("$.beerOrderLines", hasSize(1)))
                 .andExpect(jsonPath("$.beerOrderLines[0].beerId", is(beerId.toString())))
