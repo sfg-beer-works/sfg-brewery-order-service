@@ -12,6 +12,7 @@ import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -29,6 +30,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     private final BeerOrderRepository beerOrderRepository;
     private final BeerOrderStateChangeInterceptor beerOrderStateChangeInterceptor;
 
+    @Transactional
     @Override
     public BeerOrder newBeerOrder(BeerOrder beerOrder) {
         BeerOrder savedOrder = beerOrderRepository.save(beerOrder);
@@ -39,40 +41,53 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         return beerOrderRepository.getOne(savedOrder.getId());
     }
 
+    @Transactional
     @Override
     public void beerOrderPassedValidation(UUID beerOrderId) {
         BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_PASSED);
     }
 
+    @Transactional
     @Override
     public void beerOrderFailedValidation(UUID beerOrderId) {
         BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_FAILED);
     }
 
+    @Transactional
     @Override
     public void beerOrderAllocationPassed(UUID beerOrderId) {
         BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
     }
 
+    @Transactional
     @Override
     public void beerOrderAllocationPendingInventory(UUID beerOrderId) {
         BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
     }
 
+    @Transactional
     @Override
     public void beerOrderAllocationFailed(UUID beerOrderId) {
         BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_FAILED);
     }
 
+    @Transactional
     @Override
     public void pickupBeerOrder(UUID beerOrderId) {
         BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.BEER_ORDER_PICKED_UP);
+    }
+
+    @Transactional
+    @Override
+    public void cancelBeerOrder(UUID beerOrderId) {
+        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.CANCEL_ORDER);
     }
 
     private void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum event){

@@ -115,11 +115,26 @@ class BeerOrderManagerImplTest {
 
             assertEquals(BeerOrderStatusEnum.PICKED_UP, orderCheck.getOrderStatus());
         });
+    }
 
-        //wireMockServer.
+    @Test
+    void testCanxOrder() throws JsonProcessingException {
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("1234").build();
 
-        //verify(getRequestedFor(urlEqualTo(BeerServiceImpl.BEER_PATH_V1 + beerId.toString())));
+        wireMockServer.stubFor(get(BeerServiceImpl.BEER_PATH_V1 + beerId.toString())
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
+        BeerOrder orderToSave = createBeerOrder();
+
+        BeerOrder savedOrder = beerOrderManager.newBeerOrder(orderToSave);
+
+        beerOrderManager.cancelBeerOrder(savedOrder.getId());
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.getOne(savedOrder.getId());
+
+            assertEquals(BeerOrderStatusEnum.CANCELED, foundOrder.getOrderStatus());
+        });
 
     }
 

@@ -20,6 +20,7 @@ public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<B
     private final Action<BeerOrderStatusEnum, BeerOrderEventEnum> validateBeerOrder;
     private final Action<BeerOrderStatusEnum, BeerOrderEventEnum> allocateBeerOrder;
     private final Action<BeerOrderStatusEnum, BeerOrderEventEnum> orderStatusChange;
+    private final Action<BeerOrderStatusEnum, BeerOrderEventEnum> deallocateOrder;
 
     @Override
     public void configure(StateMachineStateConfigurer<BeerOrderStatusEnum, BeerOrderEventEnum> states) throws Exception {
@@ -60,6 +61,19 @@ public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<B
                 .source(BeerOrderStatusEnum.ALLOCATED).target(BeerOrderStatusEnum.PICKED_UP)
                 .event(BeerOrderEventEnum.BEER_ORDER_PICKED_UP)
                 .action(orderStatusChange)
+            .and().withExternal()
+                .source(BeerOrderStatusEnum.NEW).target(BeerOrderStatusEnum.CANCELED)
+                .event(BeerOrderEventEnum.CANCEL_ORDER)
+                .action(orderStatusChange)
+            .and().withExternal()
+                .source(BeerOrderStatusEnum.VALIDATED).target(BeerOrderStatusEnum.CANCELED)
+                .event(BeerOrderEventEnum.CANCEL_ORDER)
+                .action(orderStatusChange)
+            .and().withExternal()
+                .source(BeerOrderStatusEnum.ALLOCATED).target(BeerOrderStatusEnum.CANCELED)
+                .event(BeerOrderEventEnum.CANCEL_ORDER)
+                .action(orderStatusChange)
+                .action(deallocateOrder)
         ;
     }
 }
