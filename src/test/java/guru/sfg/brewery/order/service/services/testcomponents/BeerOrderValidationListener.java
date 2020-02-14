@@ -38,11 +38,11 @@ public class BeerOrderValidationListener {
 
         JsonNode beerOrder = event.get("beerOrder");
 
-        Boolean isValid = true;
+        boolean isValid = true;
         JsonNode order = beerOrder.get("id");
 
         if(order.get("customerRef") != null) {
-            if (order.get("customerRef").asText() == "fail") isValid = false;
+            if (order.get("customerRef").asText() == "validation_fail") isValid = false;
         }
 
         jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESULT_QUEUE, BeerOrderValidationResult.builder()

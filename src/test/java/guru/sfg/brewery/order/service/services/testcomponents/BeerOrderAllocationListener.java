@@ -36,17 +36,22 @@ public class BeerOrderAllocationListener {
 
         JsonNode beerOrder = event.get("beerOrder");
 
-        Boolean isValid = true;
+        boolean isValid = true;
+        boolean inventortyPending = false;
         JsonNode order = beerOrder.get("id");
 
         if(order.get("customerRef") != null) {
-            if (order.get("customerRef").asText() == "fail") isValid = false;
+            if (order.get("customerRef").asText() == "allocation_fail") isValid = false;
+        }
+
+        if(order.get("customerRef") != null) {
+            if (order.get("customerRef").asText() == "pending_inventory") inventortyPending = true;
         }
 
         jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE, AllocateBeerOrderResult.builder()
                 .beerOrderId(UUID.fromString(order.asText()))
                 .allocated(isValid)
-                .pendingInventory(false)
+                .pendingInventory(inventortyPending)
                 .build());
     }
 }

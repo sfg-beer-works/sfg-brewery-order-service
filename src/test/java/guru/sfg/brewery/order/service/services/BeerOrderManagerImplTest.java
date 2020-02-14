@@ -79,8 +79,6 @@ class BeerOrderManagerImplTest {
         testCustomer = customerRepository.save(Customer.builder()
                 .customerName("Test Customer")
                 .build());
-
-
     }
 
     @Test
@@ -143,7 +141,27 @@ class BeerOrderManagerImplTest {
     }
 
     @Test
-    void beerOrderFailedValidation() {
+    void beerOrderFailedValidation() throws JsonProcessingException {
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("1234").build();
+
+        wireMockServer.stubFor(get(BeerServiceImpl.BEER_PATH_V1 + beerId.toString())
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+        BeerOrder orderToSave = createBeerOrder();
+        orderToSave.setCustomerRef("validation_fail");
+
+        BeerOrder savedOrder = beerOrderManager.newBeerOrder(orderToSave);
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.getOne(savedOrder.getId());
+
+            assertEquals(BeerOrderStatusEnum.VALIDATION_EXCEPTION, foundOrder.getOrderStatus());
+        });
+
+        BeerOrder foundOrder = beerOrderRepository.getOne(savedOrder.getId());
+
+        assertNotNull(foundOrder);
+
     }
 
     @Test
@@ -155,7 +173,26 @@ class BeerOrderManagerImplTest {
     }
 
     @Test
-    void beerOrderAllocationFailed() {
+    void beerOrderAllocationFailed() throws JsonProcessingException {
+        BeerDto beerDto = BeerDto.builder().id(beerId).upc("1234").build();
+
+        wireMockServer.stubFor(get(BeerServiceImpl.BEER_PATH_V1 + beerId.toString())
+                .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
+
+        BeerOrder orderToSave = createBeerOrder();
+        orderToSave.setCustomerRef("allocation_fail");
+
+        BeerOrder savedOrder = beerOrderManager.newBeerOrder(orderToSave);
+
+        await().untilAsserted(() -> {
+            BeerOrder foundOrder = beerOrderRepository.getOne(savedOrder.getId());
+
+            assertEquals(BeerOrderStatusEnum.VALIDATION_EXCEPTION, foundOrder.getOrderStatus());
+        });
+
+        BeerOrder foundOrder = beerOrderRepository.getOne(savedOrder.getId());
+
+        assertNotNull(foundOrder);
     }
 
     @Test
