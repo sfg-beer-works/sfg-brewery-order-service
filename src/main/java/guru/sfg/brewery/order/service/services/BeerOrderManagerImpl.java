@@ -1,23 +1,30 @@
 package guru.sfg.brewery.order.service.services;
 
+import guru.sfg.brewery.model.BeerOrderDto;
 import guru.sfg.brewery.order.service.domain.BeerOrder;
 import guru.sfg.brewery.order.service.domain.BeerOrderEventEnum;
 import guru.sfg.brewery.order.service.domain.BeerOrderStatusEnum;
 import guru.sfg.brewery.order.service.repositories.BeerOrderRepository;
 import guru.sfg.brewery.order.service.sm.BeerOrderStateChangeInterceptor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by jt on 2019-09-08.
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BeerOrderManagerImpl implements BeerOrderManager {
@@ -28,54 +35,134 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     private final StateMachineFactory<BeerOrderStatusEnum, BeerOrderEventEnum> stateMachineFactory;
     private final BeerOrderRepository beerOrderRepository;
     private final BeerOrderStateChangeInterceptor beerOrderStateChangeInterceptor;
+    private final EntityManager entityManager;
 
+    @Transactional
     @Override
     public BeerOrder newBeerOrder(BeerOrder beerOrder) {
-        BeerOrder savedOrder = beerOrderRepository.save(beerOrder);
+        beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
+        BeerOrder savedOrder = beerOrderRepository.saveAndFlush(beerOrder);
 
         //send validation event
         sendBeerOrderEvent(savedOrder, BeerOrderEventEnum.VALIDATE_ORDER);
 
-        return beerOrderRepository.getOne(savedOrder.getId());
+        return savedOrder;
     }
 
+    @Transactional
     @Override
     public void beerOrderPassedValidation(UUID beerOrderId) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
-        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_PASSED);
+
+        awaitForStatus(beerOrderId, BeerOrderStatusEnum.PENDING_VALIDATION);
+
+        beerOrderRepository.findById(beerOrderId).ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_PASSED);
+
+            awaitForStatus(beerOrderId, BeerOrderStatusEnum.VALIDATED);
+
+            BeerOrder validatedOrder = beerOrderRepository.findById(beerOrderId).get();
+
+            sendBeerOrderEvent(validatedOrder, BeerOrderEventEnum.ALLOCATE_ORDER);
+        }, () -> log.error("Order Not Found. Id: " + beerOrderId));
     }
 
+    public void awaitForStatus(UUID beerOrderId, BeerOrderStatusEnum statusEnum) {
+
+        AtomicBoolean found = new AtomicBoolean(false);
+        AtomicInteger loopCount = new AtomicInteger(0);
+
+        while (!found.get()) {
+            if (loopCount.incrementAndGet() > 10) {
+                found.set(true);
+                log.debug("Loop Retries exceeded");
+            }
+
+            beerOrderRepository.findById(beerOrderId).ifPresentOrElse(beerOrder -> {
+                if (beerOrder.getOrderStatus().equals(statusEnum)) {
+                    found.set(true);
+                    log.debug("Order Found");
+                } else {
+                    log.debug("Order Status Not Equal. Expected: " + statusEnum.name() + " Found: " + beerOrder.getOrderStatus().name());
+                }
+            }, () -> {
+                log.debug("Order Id Not Found");
+            });
+
+            if (!found.get()) {
+                try {
+                    log.debug("Sleeping for retry");
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    // do nothing
+                }
+            }
+        }
+    }
+
+    @Transactional
     @Override
     public void beerOrderFailedValidation(UUID beerOrderId) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
-        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_FAILED);
+
+        awaitForStatus(beerOrderId, BeerOrderStatusEnum.PENDING_VALIDATION);
+
+        beerOrderRepository.findById(beerOrderId).ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_FAILED);
+        }, () -> log.error("Order Not Found. Id: " + beerOrderId));
     }
 
     @Override
-    public void beerOrderAllocationPassed(UUID beerOrderId) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
-        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
+    public void beerOrderAllocationPassed(BeerOrderDto beerOrderDto) {
+        beerOrderRepository.findById(beerOrderDto.getId()).ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
+            awaitForStatus(beerOrder.getId(), BeerOrderStatusEnum.ALLOCATED);
+            updateAllocatedQty(beerOrderDto, beerOrder);
+        }, () -> log.error("Order Not Found. Id: " + beerOrderDto.getId()));
     }
 
     @Override
-    public void beerOrderAllocationPendingInventory(UUID beerOrderId) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
-        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
+    public void beerOrderAllocationPendingInventory(BeerOrderDto beerOrderDto) {
+        beerOrderRepository.findById(beerOrderDto.getId()).ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
+            updateAllocatedQty(beerOrderDto, beerOrder);
+        }, () -> log.error("Order Not Found. Id: " + beerOrderDto.getId()));
+    }
+
+    private void updateAllocatedQty(BeerOrderDto beerOrderDto, BeerOrder beerOrder) {
+        BeerOrder allocatedOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+
+        allocatedOrder.getBeerOrderLines().forEach(beerOrderLine -> {
+            beerOrderDto.getBeerOrderLines().forEach(beerOrderLineDto -> {
+                if (beerOrderLine.getId().equals(beerOrderLineDto.getId())) {
+                    beerOrderLine.setQuantityAllocated(beerOrderLineDto.getQuantityAllocated());
+                }
+            });
+        });
+
+        beerOrderRepository.saveAndFlush(allocatedOrder);
     }
 
     @Override
-    public void beerOrderAllocationFailed(UUID beerOrderId) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
-        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_FAILED);
+    public void beerOrderAllocationFailed(BeerOrderDto beerOrderDto) {
+        beerOrderRepository.findById(beerOrderDto.getId()).ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_FAILED);
+        }, () -> log.error("Order Not Found. Id: " + beerOrderDto.getId()));
     }
 
     @Override
     public void pickupBeerOrder(UUID beerOrderId) {
-        BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderId);
-        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.BEER_ORDER_PICKED_UP);
+        beerOrderRepository.findById(beerOrderId).ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.BEER_ORDER_PICKED_UP);
+        }, () -> log.error("Order Not Found. Id: " + beerOrderId));
     }
 
-    private void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum event){
+    @Override
+    public void cancelOrder(UUID beerOrderId) {
+        beerOrderRepository.findById(beerOrderId).ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.CANCEL_ORDER);
+        }, () -> log.error("Order Not Found. Id: " + beerOrderId));
+    }
+
+    private void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum event) {
 
         StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(beerOrder);
 

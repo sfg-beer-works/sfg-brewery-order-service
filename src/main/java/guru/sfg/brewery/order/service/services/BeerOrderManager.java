@@ -1,5 +1,6 @@
 package guru.sfg.brewery.order.service.services;
 
+import guru.sfg.brewery.model.BeerOrderDto;
 import guru.sfg.brewery.order.service.domain.BeerOrder;
 
 import java.util.UUID;
@@ -15,11 +16,13 @@ public interface BeerOrderManager {
 
     void beerOrderFailedValidation(UUID beerOrderId);
 
-    void beerOrderAllocationPassed(UUID beerOrderId);
+    void beerOrderAllocationPassed(BeerOrderDto beerOrder);
 
-    void beerOrderAllocationPendingInventory(UUID beerOrderId);
+    void beerOrderAllocationPendingInventory(BeerOrderDto beerOrder);
 
-    void beerOrderAllocationFailed(UUID beerOrderId);
+    void beerOrderAllocationFailed(BeerOrderDto beerOrder);
 
     void pickupBeerOrder(UUID beerOrderId);
+
+    void cancelOrder(UUID beerOrderId);
 }

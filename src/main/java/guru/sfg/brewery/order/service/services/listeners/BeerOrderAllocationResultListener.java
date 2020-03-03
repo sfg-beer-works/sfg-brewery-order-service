@@ -20,15 +20,18 @@ public class BeerOrderAllocationResultListener {
     @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE)
     public void listen(AllocateBeerOrderResult result) {
 
-        if(result.getAllocated() && !result.getPendingInventory()){
+        System.out.println("###############");
+        System.out.println(result.toString());
+
+        if(!result.getAllocationError() && !result.getPendingInventory()){
             //allocated normally
-            beerOrderManager.beerOrderAllocationPassed(result.getBeerOrderId());
-        } else if(!result.getAllocated() && result.getPendingInventory()) {
+            beerOrderManager.beerOrderAllocationPassed(result.getBeerOrderDto());
+        } else if(!result.getAllocationError() && result.getPendingInventory()) {
             //pending inventory
-            beerOrderManager.beerOrderAllocationPendingInventory(result.getBeerOrderId());
-        } else if(result.getAllocated() && !result.getPendingInventory()){
+            beerOrderManager.beerOrderAllocationPendingInventory(result.getBeerOrderDto());
+        } else if(result.getAllocationError()){
             //allocation error
-            beerOrderManager.beerOrderAllocationFailed(result.getBeerOrderId());
+            beerOrderManager.beerOrderAllocationFailed(result.getBeerOrderDto());
         }
     }
 }

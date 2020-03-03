@@ -38,7 +38,6 @@ import java.util.UUID;
 public class BeerOrderLineDto {
 
     @Null
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id = null;
 
     @Null

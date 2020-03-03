@@ -47,6 +47,6 @@ public class BeerPagedList extends PageImpl<BeerDto> {
     }
 
     public BeerPagedList(List<BeerDto> content) {
-        super(content);
+        super(content, PageRequest.of(1, content.size()), content.size());
     }
 }

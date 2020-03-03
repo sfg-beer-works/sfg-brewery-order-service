@@ -31,6 +31,8 @@ public class BeerOrderValidationListener {
     @JmsListener(destination = JmsConfig.VALIDATE_ORDER_QUEUE)
     public void listen(Message msg) throws IOException, JMSException {
 
+      //  await().atLeast(1L, TimeUnit.SECONDS).until(() -> true);
+
         String jsonString = msg.getBody(String.class);
 
         JsonNode event = objectMapper.readTree(jsonString);
@@ -38,16 +40,23 @@ public class BeerOrderValidationListener {
 
         JsonNode beerOrder = event.get("beerOrder");
 
-        Boolean isValid = true;
-        JsonNode order = beerOrder.get("id");
+        boolean isValid = true;
+        boolean sendOrder = true;
+        JsonNode orderId = beerOrder.get("id");
 
-        if(order.get("customerRef") != null) {
-            if (order.get("customerRef").asText() == "fail") isValid = false;
+        if(beerOrder.get("customerRef") != null) {
+            if (beerOrder.get("customerRef").asText().equals("fail-validation")) {
+                isValid = false;
+            } else if (beerOrder.get("customerRef").asText().equals("dont-validate")){
+                sendOrder = false;
+            }
         }
 
-        jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESULT_QUEUE, BeerOrderValidationResult.builder()
-                .beerOrderId(UUID.fromString(order.asText()))
-                .isValid(isValid)
-                .build());
+        if (sendOrder) {
+            jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESULT_QUEUE, BeerOrderValidationResult.builder()
+                    .beerOrderId(UUID.fromString(orderId.asText()))
+                    .isValid(isValid)
+                    .build());
+        }
     }
 }

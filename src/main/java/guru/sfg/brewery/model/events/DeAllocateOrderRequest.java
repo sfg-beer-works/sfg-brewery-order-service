@@ -7,14 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Created by jt on 2019-09-09.
+ * Created by jt on 2/29/20.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AllocateBeerOrderResult {
-    private BeerOrderDto beerOrderDto;
-    private Boolean allocationError;
-    private Boolean pendingInventory;
+public class DeAllocateOrderRequest {
+    private BeerOrderDto beerOrder;
 }

@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 /**
  * Created by jt on 2019-09-08.
  */
@@ -20,12 +22,14 @@ public class BeerOrderValidationResultListener {
 
     @JmsListener(destination = JmsConfig.VALIDATE_ORDER_RESULT_QUEUE)
     public void listen(BeerOrderValidationResult result) {
-        log.debug("Validation Result for Order Id: " + result.getBeerOrderId() + " is: " + result.getIsValid());
+        final UUID beerOrderId = result.getBeerOrderId();
+
+        log.debug("Validation Result for Order Id: " + beerOrderId + " is: " + result.getIsValid());
 
         if(result.getIsValid()){
-            beerOrderManager.beerOrderPassedValidation(result.getBeerOrderId());
+            beerOrderManager.beerOrderPassedValidation(beerOrderId);
         } else {
-            beerOrderManager.beerOrderFailedValidation(result.getBeerOrderId());
+            beerOrderManager.beerOrderFailedValidation(beerOrderId);
         }
     }
 }
