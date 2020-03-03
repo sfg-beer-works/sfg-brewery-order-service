@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * Beer Order Controller
+ */
 @RequestMapping("/api/v1/customers/{customerId}/")
 @RestController
 public class BeerOrderController {
