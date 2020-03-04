@@ -1,6 +1,6 @@
 package guru.sfg.brewery.order.service.sm.actions;
 
-import guru.sfg.brewery.model.events.DeallocateOrderRequest;
+import guru.sfg.brewery.model.events.DeAllocateOrderRequest;
 import guru.sfg.brewery.order.service.config.JmsConfig;
 import guru.sfg.brewery.order.service.domain.BeerOrder;
 import guru.sfg.brewery.order.service.domain.BeerOrderEventEnum;
@@ -28,7 +28,7 @@ public class DeallocateOrder implements Action<BeerOrderStatusEnum, BeerOrderEve
                 .get(ORDER_OBJECT_HEADER, BeerOrder.class);
 
 
-        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE, DeallocateOrderRequest
+        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE, DeAllocateOrderRequest
                 .builder()
                 .beerOrder(beerOrderMapper.beerOrderToDto(beerOrder))
                 .build());
