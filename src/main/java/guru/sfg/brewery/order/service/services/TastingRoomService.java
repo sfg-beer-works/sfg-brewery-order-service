@@ -9,6 +9,7 @@ import guru.sfg.brewery.order.service.domain.Customer;
 import guru.sfg.brewery.order.service.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,7 +25,7 @@ public class TastingRoomService {
     private final CustomerRepository customerRepository;
     private final BeerService beerService;
 
- //   @Scheduled(fixedRateString = "${sfg.tasting.room.rate}")
+    @Scheduled(fixedRateString = "${sfg.tasting.room.rate}")
     public void createTastingRoomOrder(){
 
         getRandomBeer().ifPresent(beerId -> {

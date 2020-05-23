@@ -17,11 +17,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 import java.util.HashSet;
@@ -66,10 +64,6 @@ class BeerOrderManagerImplTest {
 
     @Autowired
     CustomerRepository customerRepository;
-
-    @Qualifier("cachingJmsConnectionFactory")
-    @Autowired
-    CachingConnectionFactory cachingConnectionFactory;
 
     @Autowired
     JmsTemplate jmsTemplate;

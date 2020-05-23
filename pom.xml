@@ -23,21 +23,17 @@
     <parent>
         <groupId>com.github.sfg-beer-works</groupId>
         <artifactId>sfg-brewery-bom</artifactId>
-        <version>1.0.10</version>
+        <version>1.0.19</version>
     </parent>
 
     <artifactId>sfg-brewery-order-service</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <name>SFG Brewery Order Service</name>
 
     <description>SFG Brewery Order Service</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpasyncclient</artifactId>
@@ -66,4 +62,11 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
+
+    <scm>
+        <connection>scm:git:git@github.com:sfg-beer-works/sfg-brewery-order-service.git</connection>
+        <developerConnection>scm:git:git@github.com:sfg-beer-works/sfg-brewery-order-service.git</developerConnection>
+        <url>https://github.com/sfg-beer-works/sfg-brewery-order-service</url>
+        <tag>HEAD</tag>
+    </scm>
 </project>
