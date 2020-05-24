@@ -1,0 +1,24 @@
+version: '3'
+services:
+    jms:
+        image: vromero/activemq-artemis
+        ports:
+            - 8161:8161
+            - 61616:61616
+    eureka:
+        image: sfgbeerworks/sfg-brewery-eureka
+        ports:
+            - 8761:8761
+    config:
+        image: sfgbeerworks/sfg-brewery-config
+        ports:
+          - 8888:8888
+        depends_on:
+          - eureka
+    inventory:
+        image: sfgbeerworks/sfg-brewery-inventory
+        ports:
+          - 8082:8082
+        depends_on:
+          - eureka
+          - config
