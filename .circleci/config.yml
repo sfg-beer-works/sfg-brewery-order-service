@@ -18,17 +18,17 @@ jobs:
 
         environment:
             # Customize the JVM maximum heap limit
-            MAVEN_OPTS: -Xmx2048m -Xms1024m -Xshare:on -XX:TieredStopAtLevel=1 -XX:+UseParallelGC -Xverify:none
-
+           # MAVEN_OPTS: -Xmx2048m -Xms1024m -Xshare:on -XX:TieredStopAtLevel=1 -XX:+UseParallelGC -Xverify:none
+            MAVEN_OPTS: -Xmx3096m
         steps:
             - checkout
 
             # Download and cache dependencies
-#            - restore_cache:
-#                  keys:
-#                      - v1-dependencies-{{ checksum "pom.xml" }}
-#                      # fallback to using the latest cache if no exact match is found
-#                      - v1-dependencies-
+            - restore_cache:
+                  keys:
+                      - v1-dependencies-{{ checksum "pom.xml" }}
+                      # fallback to using the latest cache if no exact match is found
+                      - v1-dependencies-
 
             - run: mvn dependency:go-offline
 
