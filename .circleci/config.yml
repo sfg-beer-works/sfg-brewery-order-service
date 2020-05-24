@@ -18,7 +18,7 @@ jobs:
 
         environment:
             # Customize the JVM maximum heap limit
-            MAVEN_OPTS: -Xmx2048m -Xms1024m -XX:MaxPermSize=512m -Xshare:on -XX:TieredStopAtLevel=1 -XX:+UseParallelGC -Xverify:none
+            MAVEN_OPTS: -Xmx2048m -Xms1024m -Xshare:on -XX:TieredStopAtLevel=1 -XX:+UseParallelGC -Xverify:none
 
         steps:
             - checkout
