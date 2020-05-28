@@ -25,7 +25,7 @@
     </parent>
 
     <artifactId>sfg-brewery-order-service</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
 
     <name>SFG Brewery Order Service</name>
 
@@ -77,6 +77,6 @@
         <connection>scm:git:git@github.com:sfg-beer-works/sfg-brewery-order-service.git</connection>
         <developerConnection>scm:git:git@github.com:sfg-beer-works/sfg-brewery-order-service.git</developerConnection>
         <url>https://github.com/sfg-beer-works/sfg-brewery-order-service</url>
-        <tag>HEAD</tag>
+        <tag>sfg-brewery-order-service-1.0.1</tag>
     </scm>
 </project>
