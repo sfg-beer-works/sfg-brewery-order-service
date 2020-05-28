@@ -70,6 +70,9 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
     @Override
     public BeerOrderDto placeOrder(UUID customerId, BeerOrderDto beerOrderDto) {
+
+        log.debug("Placing Order " + beerOrderDto.toString());
+
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found. UUID: " + customerId));
 

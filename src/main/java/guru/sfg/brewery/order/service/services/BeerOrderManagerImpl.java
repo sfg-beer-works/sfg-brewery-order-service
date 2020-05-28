@@ -40,6 +40,8 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     @Transactional
     @Override
     public BeerOrder newBeerOrder(BeerOrder beerOrder) {
+        log.debug("New Order: " + beerOrder.toString());
+
         beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
         BeerOrder savedOrder = beerOrderRepository.saveAndFlush(beerOrder);
 
@@ -52,6 +54,8 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     @Transactional
     @Override
     public void beerOrderPassedValidation(UUID beerOrderId) {
+
+        log.debug("Order Passed Validation:" + beerOrderId);
 
         awaitForStatus(beerOrderId, BeerOrderStatusEnum.PENDING_VALIDATION);
 
@@ -112,6 +116,9 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
 
     @Override
     public void beerOrderAllocationPassed(BeerOrderDto beerOrderDto) {
+
+        log.debug("Allocation Passed: " + beerOrderDto.toString());
+
         beerOrderRepository.findById(beerOrderDto.getId()).ifPresentOrElse(beerOrder -> {
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
             awaitForStatus(beerOrder.getId(), BeerOrderStatusEnum.ALLOCATED);
